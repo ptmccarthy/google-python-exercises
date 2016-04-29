@@ -39,30 +39,67 @@ print_words() and print_top().
 
 import sys
 
-# +++your code here+++
-# Define print_words(filename) and print_top(filename) functions.
-# You could write a helper utility function that reads a file
-# and builds and returns a word/count dict for it.
-# Then print_words() and print_top() can just call the utility function.
 
-###
+def print_words(filename):
+    words = read_file_words(filename)
+
+    for word in sorted(words.keys()):
+        print word, words[word]
+
+    sys.exit(0)
+
+
+def print_top(filename):
+    words = read_file_words(filename)
+
+    sorted_top_words = sorted(words.items(), key=getCount, reverse=True)
+
+    for word in sorted_top_words[:20]:
+        print word[0], word[1]
+
+    sys.exit(0)
+
+
+def getCount(item):
+    return item[1]
+
+
+def read_file_words(filename):
+    count = {}
+    f = open(filename, 'rU')
+
+    for line in f:
+        words = line.split()
+
+        for word in words:
+            word = word.lower()
+
+            if word not in count:
+                count[word] = 1
+            else:
+                count[word] += 1
+
+    f.close()
+    return count
+
 
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
 def main():
-  if len(sys.argv) != 3:
-    print 'usage: ./wordcount.py {--count | --topcount} file'
-    sys.exit(1)
+    if len(sys.argv) != 3:
+        print 'usage: ./wordcount.py {--count | --topcount} file'
+        sys.exit(1)
 
-  option = sys.argv[1]
-  filename = sys.argv[2]
-  if option == '--count':
-    print_words(filename)
-  elif option == '--topcount':
-    print_top(filename)
-  else:
-    print 'unknown option: ' + option
-    sys.exit(1)
+    option = sys.argv[1]
+    filename = sys.argv[2]
+    if option == '--count':
+        print_words(filename)
+    elif option == '--topcount':
+        print_top(filename)
+    else:
+        print 'unknown option: ' + option
+        sys.exit(1)
+
 
 if __name__ == '__main__':
-  main()
+    main()
